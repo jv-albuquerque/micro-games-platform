@@ -11,7 +11,7 @@ The base asset to do this is in the [asset store](https://assetstore.unity.com/p
 ## TODO
 * New Enemy: Add a new enemy with a diferent behavior.
 * ~~Chackpoint~~: Add a checkpoint system, when the player dies the player go back to the last checkpoint.
-* Trampoline: Add a object in the scene with the function of a trampoline, when the player jumps on, he will be launched up.
+* ~~Trampoline~~: Add a object in the scene with the function of a trampoline, when the player jumps on, he will be launched up.
 * Power-ups: Add a spawn system of power-ups. Need to be at least 3 differents power-ups that appear in differents specifics places in the scene.
 
 ## Authors
