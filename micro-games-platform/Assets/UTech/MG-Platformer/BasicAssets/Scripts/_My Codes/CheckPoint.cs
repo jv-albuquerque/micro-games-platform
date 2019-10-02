@@ -10,14 +10,7 @@ namespace Platformer.Mechanics
     {
         private bool notUsed = true; // this indicate if this checkpoint was already used
 
-        [SerializeField] private GameController gamecontroller;
-        
-
-        private void Start()
-        {
-
-        }
-
+        //verify if the player collides with the checkpoint area
         private void OnTriggerEnter2D(Collider2D collision)
         {
             var player = collision.gameObject.GetComponent<PlayerController>();
@@ -25,6 +18,7 @@ namespace Platformer.Mechanics
             {
                 if(notUsed)
                 {
+                    //get the singleton instance of the gameobject than change the transform of the spawn point
                     GameController.instance.SpawnPoint = transform;
                 }
             }

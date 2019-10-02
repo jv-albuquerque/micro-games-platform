@@ -27,6 +27,11 @@ namespace Platformer.Mechanics
         /// </summary>
         public float jumpTakeOffSpeed = 7;
 
+        /// <summary>
+        /// Verify if the jump was made by a trampoline
+        /// </summary>
+        private bool trampolineJump = false;
+
         public JumpState jumpState = JumpState.Grounded;
         private bool stopJump;
         /*internal new*/ public Collider2D collider2d;
@@ -58,7 +63,7 @@ namespace Platformer.Mechanics
                 move.x = Input.GetAxis("Horizontal");
                 if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
                     jumpState = JumpState.PrepareToJump;
-                else if (Input.GetButtonUp("Jump"))
+                else if (Input.GetButtonUp("Jump") && !trampolineJump)
                 {
                     stopJump = true;
                     Schedule<PlayerStopJump>().player = this;
@@ -98,6 +103,7 @@ namespace Platformer.Mechanics
                     break;
                 case JumpState.Landed:
                     jumpState = JumpState.Grounded;
+                    trampolineJump = false;
                     break;
             }
         }
@@ -127,6 +133,19 @@ namespace Platformer.Mechanics
             animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
 
             targetVelocity = move * maxSpeed;
+        }
+
+        //function that calls the trampoline Jumps, a higher jump
+        public void TrampolineJump()
+        {
+            velocity.y = jumpTakeOffSpeed * model.jumpModifier*1.5f;
+            trampolineJump = true;
+
+            //this area is made this way because if i call JumpState.PrepareToJump
+            //the jump will jump high one time and than will jump in a normal hight
+            jumpState = JumpState.Jumping;
+            jump = true;
+            stopJump = false;
         }
 
         public enum JumpState

@@ -15,4 +15,4 @@ The base asset to do this is in the [asset store](https://assetstore.unity.com/p
 * Power-ups: Add a spawn system of power-ups. Need to be at least 3 differents power-ups that appear in differents specifics places in the scene.
 
 ## Authors
-* **João Vitor Filgueira Albuquerque** - [my site](https://jvalbuquerque.com.br)
+* **João Vitor Filgueira Albuquerque** - [João Vitor's site](https://jvalbuquerque.com.br)
