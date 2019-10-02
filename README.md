@@ -1,7 +1,7 @@
 # Micro Games Platform
 
 ## Overview
-Project made to test mechanics in a platform 2D using Unity 2019.2.3f1
+Project made to test mechanics in a platform 2D using Unity 2018.4.10f1 LTS
 The base asset to do this is in the [asset store](https://assetstore.unity.com/packages/templates/micro-games-platformer-151055)
 
 <p align="center">
