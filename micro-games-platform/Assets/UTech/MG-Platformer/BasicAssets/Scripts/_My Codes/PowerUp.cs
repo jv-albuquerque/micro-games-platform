@@ -23,12 +23,13 @@ namespace Platformer.Mechanics
                 switch (powerUpType)
                 {
                     case PowerUps.Star:
-                        player.StarPowerUP();
+                        player.StarPowerUp();
                         break;
                     case PowerUps.DoubleJump:
                         player.JumpPowerUp();
                         break;
                     case PowerUps.ZeroGravity:
+                        player.GravityPowerUp();
                         break;
                     default:
                         break;

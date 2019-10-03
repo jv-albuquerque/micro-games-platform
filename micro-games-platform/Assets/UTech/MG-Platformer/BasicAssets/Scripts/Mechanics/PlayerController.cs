@@ -51,6 +51,9 @@ namespace Platformer.Mechanics
         [SerializeField] private PowerUpProperties starPowerUP = null;
         [SerializeField] private PowerUpProperties jumpPowerUP = null;
         private bool doubleJumped = false;
+        [SerializeField] private PowerUpProperties gravityPowerUP = null;
+        private float originalGravity;
+        private float originalJumpTakeOffSpeed = 7;
 
 
         public Bounds Bounds => collider2d.bounds;
@@ -63,16 +66,21 @@ namespace Platformer.Mechanics
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
 
+            originalGravity = gravityModifier;
+
             //get the "Set Text" of the gameobjects
             starPowerUP.textCount = starPowerUP.ui_count.GetComponent<SetText>();
             jumpPowerUP.textCount = jumpPowerUP.ui_count.GetComponent<SetText>();
+            gravityPowerUP.textCount = gravityPowerUP.ui_count.GetComponent<SetText>();
 
             //iniciate the Cooldowns
             starPowerUP.cd = new Cooldown(starPowerUP.time);
             jumpPowerUP.cd = new Cooldown(jumpPowerUP.time);
+            gravityPowerUP.cd = new Cooldown(gravityPowerUP.time);
 
             starPowerUP.Stop();
             jumpPowerUP.Stop();
+            gravityPowerUP.Stop();
         }
 
         protected override void Update()
@@ -209,6 +217,20 @@ namespace Platformer.Mechanics
                     jumpPowerUP.UpdateText();
                 }
             }
+
+            if (gravityPowerUP.active)
+            {
+                if (gravityPowerUP.cd.IsFinished)
+                {
+                    gravityPowerUP.Stop();
+                    gravityModifier = originalGravity;
+                    jumpTakeOffSpeed = originalJumpTakeOffSpeed;
+                }
+                else
+                {
+                    gravityPowerUP.UpdateText();
+                }
+            }
         }
 
         public void JumpPowerUp()
@@ -216,9 +238,16 @@ namespace Platformer.Mechanics
             jumpPowerUP.Start();
         }
 
-        public void StarPowerUP()
+        public void StarPowerUp()
         {
             starPowerUP.Start();
+        }
+
+        public void GravityPowerUp()
+        {
+            gravityPowerUP.Start();
+            gravityModifier = originalGravity * 0.4f;
+            jumpTakeOffSpeed = originalJumpTakeOffSpeed * 1.1f;
         }
 
         public bool isStarPowerUp { get { return starPowerUP.active; } }
