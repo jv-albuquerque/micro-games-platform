@@ -48,14 +48,10 @@ namespace Platformer.Mechanics
 
         // EVERYTHING ABOVE HERE IS ABOUT POWER UPS
         [Header("Power Up Things")]
+        [SerializeField] private PowerUpProrpeties starPowerUP;
+        [SerializeField] private PowerUpProrpeties jumpPowerUP;
+        private bool doubleJumped = false;
 
-        //Star power up
-        [SerializeField] private GameObject imageStartPowerUpUI = null;
-        [SerializeField] private GameObject starPowerUpCount = null;
-        [SerializeField] private float starPowerUpTime = 15;
-        private SetText textStartPowerUpCount;
-        private bool starPowerUp = false;
-        private Cooldown cdStarPowerUp;
 
         public Bounds Bounds => collider2d.bounds;
 
@@ -68,12 +64,15 @@ namespace Platformer.Mechanics
             animator = GetComponent<Animator>();
 
             //get the "Set Text" of the gameobjects
-            textStartPowerUpCount = starPowerUpCount.GetComponent<SetText>();
+            starPowerUP.textCount = starPowerUP.ui_count.GetComponent<SetText>();
+            jumpPowerUP.textCount = jumpPowerUP.ui_count.GetComponent<SetText>();
 
             //iniciate the Cooldowns
-            cdStarPowerUp = new Cooldown(starPowerUpTime);
+            starPowerUP.cd = new Cooldown(starPowerUP.time);
+            jumpPowerUP.cd = new Cooldown(jumpPowerUP.time);
 
-            DeactivateStarPU();
+            starPowerUP.Stop();
+            jumpPowerUP.Stop();
         }
 
         protected override void Update()
@@ -81,8 +80,22 @@ namespace Platformer.Mechanics
             if (controlEnabled)
             {
                 move.x = Input.GetAxis("Horizontal");
-                if (jumpState == JumpState.Grounded && Input.GetButtonDown("Jump"))
-                    jumpState = JumpState.PrepareToJump;
+                if (Input.GetButtonDown("Jump"))
+                {
+                    if(jumpState == JumpState.Grounded)
+                    {
+                        jumpState = JumpState.PrepareToJump;
+                        doubleJumped = false; // mark possible to double jump
+                    }
+                    //Double jump
+                    else if (jumpPowerUP.active && !doubleJumped)
+                    {
+                        velocity.y = jumpTakeOffSpeed * model.jumpModifier;
+                        jumpState = JumpState.PrepareToJump;
+                        doubleJumped = true;
+                    }
+
+                }
                 else if (Input.GetButtonUp("Jump") && !trampolineJump)
                 {
                     stopJump = true;
@@ -96,16 +109,7 @@ namespace Platformer.Mechanics
             UpdateJumpState();
             base.Update();
 
-            if (starPowerUp)
-            {
-                if(cdStarPowerUp.IsFinished)
-                    DeactivateStarPU();
-                else
-                {
-                    int time = (int)cdStarPowerUp.TimeLeft;
-                    textStartPowerUpCount.Text = time + " sec";
-                }
-            }
+            PowerUpsUpdates();
         }
 
         void UpdateJumpState()
@@ -134,7 +138,7 @@ namespace Platformer.Mechanics
                     break;
                 case JumpState.Landed:
                     jumpState = JumpState.Grounded;
-                    trampolineJump = false;
+                    trampolineJump = false; // mark as not jumping in a trampoline
                     break;
             }
         }
@@ -171,6 +175,7 @@ namespace Platformer.Mechanics
         {
             velocity.y = jumpTakeOffSpeed * model.jumpModifier*1.5f;
             trampolineJump = true;
+            doubleJumped = false; // mark possible to double jump afeter jump in a trampoline
 
             //this area is made this way because if i call JumpState.PrepareToJump
             //the jump will jump high one time and than will jump in a normal hight
@@ -179,41 +184,44 @@ namespace Platformer.Mechanics
             stopJump = false;
         }
 
-        //activate the star powerup
-        public void StarPowerUP()
+        private void PowerUpsUpdates()
         {
-            //deactivate the power up
-            starPowerUp = true;
-            //deactivate the ui things
-            imageStartPowerUpUI.SetActive(true);
-            starPowerUpCount.SetActive(true);
-
-            //start the count to finish the cooldown
-            cdStarPowerUp.Start();
-
-
-            //initiate the count on the screen
-            int time = (int)cdStarPowerUp.TimeLeft;
-            textStartPowerUpCount.Text = time + " sec";
-        }
-
-        //deactivate the image and the counter of the star power up
-        private void DeactivateStarPU()
-        {
-            //deactivate the power up
-            starPowerUp = false;
-            //deactivate the ui things
-            imageStartPowerUpUI.SetActive(false);
-            starPowerUpCount.SetActive(false);
-        }
-
-        public bool isStarPowerUp
-        {
-            get
+            if (starPowerUP.active)
             {
-                return starPowerUp;
+                if (starPowerUP.cd.IsFinished)
+                {
+                    starPowerUP.Stop();
+                }
+                else
+                {
+                    starPowerUP.UpdateText();
+                }
+            }
+
+            if (jumpPowerUP.active)
+            {
+                if (jumpPowerUP.cd.IsFinished)
+                {
+                    jumpPowerUP.Stop();
+                }
+                else
+                {
+                    jumpPowerUP.UpdateText();
+                }
             }
         }
+
+        public void JumpPowerUp()
+        {
+            jumpPowerUP.Start();
+        }
+
+        public void StarPowerUP()
+        {
+            starPowerUP.Start();
+        }
+
+        public bool isStarPowerUp { get => starPowerUP.active; }
 
         public enum JumpState
         {
