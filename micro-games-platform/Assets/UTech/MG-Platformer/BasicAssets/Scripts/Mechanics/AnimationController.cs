@@ -36,6 +36,7 @@ namespace Platformer.Mechanics
         /// </summary>
         public bool stopJump;
 
+
         SpriteRenderer spriteRenderer;
         Animator animator;
         PlatformerModel model = Simulation.GetModel<PlatformerModel>();

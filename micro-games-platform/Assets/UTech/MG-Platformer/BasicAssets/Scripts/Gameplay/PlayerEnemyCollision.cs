@@ -46,7 +46,7 @@ namespace Platformer.Gameplay
             }
             else
             {
-                if(player.isStarPowerUp)
+                if (player.isStarPowerUp)
                     Schedule<EnemyDeath>().enemy = enemy;
                 else
                     Schedule<PlayerDeath>();

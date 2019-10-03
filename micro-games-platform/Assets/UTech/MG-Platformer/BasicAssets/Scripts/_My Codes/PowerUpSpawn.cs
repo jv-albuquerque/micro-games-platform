@@ -10,5 +10,4 @@ public class PowerUpSpawn : MonoBehaviour
     {
         Instantiate(powerUps[Random.Range(0,powerUps.Length)], transform);
     }
-
 }

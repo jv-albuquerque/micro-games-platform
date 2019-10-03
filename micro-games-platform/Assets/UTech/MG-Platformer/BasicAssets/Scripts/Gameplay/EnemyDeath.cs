@@ -1,5 +1,6 @@
 using Platformer.Core;
 using Platformer.Mechanics;
+using UnityEngine;
 
 namespace Platformer.Gameplay
 {
@@ -17,6 +18,8 @@ namespace Platformer.Gameplay
             enemy.control.enabled = false;
             if (enemy._audio && enemy.ouch)
                 enemy._audio.PlayOneShot(enemy.ouch);
+
+            enemy.gameObject.transform.localScale = new Vector3(enemy.gameObject.transform.localScale.x, - enemy.gameObject.transform.localScale.y, enemy.gameObject.transform.localScale.z);
         }
     }
 }
