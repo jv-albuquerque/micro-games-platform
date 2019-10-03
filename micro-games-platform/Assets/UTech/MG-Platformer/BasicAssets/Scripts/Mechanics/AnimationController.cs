@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Platformer.Core;
 using Platformer.Model;
 using UnityEngine;
+using Pathfinding;
 
 namespace Platformer.Mechanics
 {
@@ -36,18 +37,115 @@ namespace Platformer.Mechanics
         /// </summary>
         public bool stopJump;
 
+        /// <summary>
+        /// Set to true if the enemy died
+        /// </summary>
+        [HideInInspector] public bool isDead = false;
+
+        // ------  Fly properties ----- //
+
+        /// <summary>
+        /// If the enemy can fly
+        /// </summary>
+        [SerializeField] private bool canFly = false;
+
+        /// <summary>
+        /// the player transform
+        /// </summary>
+        [SerializeField] private Transform playerTransform = null;
+
+        /// <summary>
+        /// How close the enemy needs to be to the waypoint to o to the next one
+        /// </summary>
+        [SerializeField] private float pickNextWaypointDist = 3f;
+
+        /// <summary>
+        /// The path that is found in A*
+        /// </summary>
+        private Path path;
+
+        /// <summary>
+        /// The current waypoint that the enemy is now
+        /// </summary>
+        private int currentWaypoint = 0;
+
+        /// <summary>
+        /// If the enemy reched the end of the path
+        /// </summary>
+        private bool rechedEndPath = false;
+
+        //objects in the enemy
+        private Seeker seeker;
+        private Rigidbody2D rb;
+
+        // ------ END Fly properties ----- //
 
         SpriteRenderer spriteRenderer;
         Animator animator;
         PlatformerModel model = Simulation.GetModel<PlatformerModel>();
 
+
         protected virtual void Awake()
         {
+            if(canFly)
+            {
+                seeker = GetComponent<Seeker>();
+                rb = GetComponent<Rigidbody2D>();
+
+                seeker.StartPath(rb.position, playerTransform.position, OnPathComplete);
+            }
+            
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<Animator>();
         }
 
         protected override void ComputeVelocity()
+        {
+            if (canFly)
+                Fly();
+            else
+                Slime();
+        }
+
+        private void Fly()
+        {
+            if (path == null)
+                return;
+
+            //if the enemy reachs the final waypoint
+            if(currentWaypoint >= path.vectorPath.Count)
+            {
+                rechedEndPath = true;
+                return;
+            }
+            else
+            {
+                rechedEndPath = false;
+            }
+
+            // a vector that point where the enemy are to where it wanna go, with the lenth = 1
+            Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
+
+            //move in the direction of the last waypoint
+            transform.position = direction * maxSpeed * Time.deltaTime;
+
+            float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
+
+            if (distance <= pickNextWaypointDist)
+                currentWaypoint++;
+
+        }
+
+        private void OnPathComplete(Path p)
+        {
+            if (!p.error)
+            {
+                path = p;
+                currentWaypoint = 0;
+            }
+        }
+
+        private void Slime()
         {
             if (jump && IsGrounded)
             {

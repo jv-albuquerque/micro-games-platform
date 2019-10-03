@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PowerUpSpawn : MonoBehaviour
 {
-    [SerializeField] private GameObject[] powerUps;
+    [SerializeField] private GameObject[] powerUps = null;
 
     private void Awake()
     {
