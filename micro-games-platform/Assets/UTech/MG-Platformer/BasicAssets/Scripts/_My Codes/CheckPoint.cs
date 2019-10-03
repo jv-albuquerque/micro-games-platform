@@ -19,7 +19,7 @@ namespace Platformer.Mechanics
                 if(notUsed)
                 {
                     //get the singleton instance of the gameobject than change the transform of the spawn point
-                    GameController.instance.SpawnPoint = transform;
+                    GameController.Instance.SpawnPoint = transform;
                 }
             }
         }

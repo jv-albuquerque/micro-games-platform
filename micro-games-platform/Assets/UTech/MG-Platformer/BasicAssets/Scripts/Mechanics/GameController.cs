@@ -10,8 +10,6 @@ namespace Platformer.Mechanics
     /// </summary> 
     public class GameController : MonoBehaviour
     {
-        public static GameController instance;
-
         public static GameController Instance { get; private set; }
 
         //This model field is public and can be therefore be modified in the 
@@ -21,13 +19,6 @@ namespace Platformer.Mechanics
         //shared reference when the scene loads, allowing the model to be
         //conveniently configured inside the inspector.
         public PlatformerModel model = Simulation.GetModel<PlatformerModel>();
-
-        private void Awake()
-        {
-            if (instance != null)
-                Destroy(gameObject);
-            instance = this;
-        }
 
         void OnEnable()
         {

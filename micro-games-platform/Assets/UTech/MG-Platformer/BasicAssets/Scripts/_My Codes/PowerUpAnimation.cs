@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PowerUpAnimation : MonoBehaviour
 {
-    [SerializeField] private float minScale;
-    [SerializeField] private float maxScale;
+    [SerializeField] private float minScale = .5f;
+    [SerializeField] private float maxScale = 1f;
     [SerializeField] private float speed = 0.1f;
 
     private bool growing;

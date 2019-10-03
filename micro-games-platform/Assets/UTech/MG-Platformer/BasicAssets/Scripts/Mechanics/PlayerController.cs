@@ -48,8 +48,8 @@ namespace Platformer.Mechanics
 
         // EVERYTHING ABOVE HERE IS ABOUT POWER UPS
         [Header("Power Up Things")]
-        [SerializeField] private PowerUpProrpeties starPowerUP;
-        [SerializeField] private PowerUpProrpeties jumpPowerUP;
+        [SerializeField] private PowerUpProperties starPowerUP = null;
+        [SerializeField] private PowerUpProperties jumpPowerUP = null;
         private bool doubleJumped = false;
 
 
@@ -85,7 +85,6 @@ namespace Platformer.Mechanics
                     if(jumpState == JumpState.Grounded)
                     {
                         jumpState = JumpState.PrepareToJump;
-                        doubleJumped = false; // mark possible to double jump
                     }
                     //Double jump
                     else if (jumpPowerUP.active && !doubleJumped)
@@ -139,6 +138,7 @@ namespace Platformer.Mechanics
                 case JumpState.Landed:
                     jumpState = JumpState.Grounded;
                     trampolineJump = false; // mark as not jumping in a trampoline
+                    doubleJumped = false; // mark possible to double jump
                     break;
             }
         }
@@ -221,7 +221,7 @@ namespace Platformer.Mechanics
             starPowerUP.Start();
         }
 
-        public bool isStarPowerUp { get => starPowerUP.active; }
+        public bool isStarPowerUp { get { return starPowerUP.active; } }
 
         public enum JumpState
         {
