@@ -19,13 +19,19 @@ namespace Platformer.Mechanics
         // case the enemy is a fly one
         [SerializeField] private bool canFly = false; //verify if the enemy can fly
         private Transform playerTransform; //the Transform of the playr gameobject
-        private float pickNextWaypointDist = 1f; //the distance the enemy needs to be of the waypoint to go to the next one
+        private float pickNextWaypointDist = 0; //the distance the enemy needs to be of the waypoint to go to the next one
         private int currentWaypoint = 0; // the waypoint the enemy is
         private Path flyPath; // the A* mesh
         private Seeker seeker; // the class that find the best path in the mesh
         private Rigidbody2D rb; // the enemy's rigidbody 2D
-        private Cooldown cd_idle; // cd to move when the enemy isn't seeing the player
         private Vector2 idleTarget; // where the fly wants to go when isnt seeing the player
+        // when the player dies and the fly is in the checkpoint place the game bugs, so i'll use this variebles to sove this
+        // when the player dies, the fly will go back to the original place, than will chage the player again
+        private Vector2 originalPlace;
+        private Cooldown cd_comeBack;
+        private Cooldown cd_seekAgain;
+
+        private bool isAlive = true;
 
         internal PatrolPath.Mover mover;
         internal AnimationController control;
@@ -47,10 +53,16 @@ namespace Platformer.Mechanics
                 seeker = GetComponent<Seeker>();
                 rb = GetComponent<Rigidbody2D>();
                 playerTransform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
-                cd_idle = new Cooldown(1f, true);
-
-                InvokeRepeating("UpdatePath", 0, .5f);
+                originalPlace = rb.position;
+                cd_comeBack = new Cooldown(3.5f);
+                cd_seekAgain = new Cooldown(1f);
             }
+        }
+
+        private void Start()
+        {
+            if (canFly)
+                UpdatePath();
         }
 
         void OnCollisionEnter2D(Collision2D collision)
@@ -61,27 +73,38 @@ namespace Platformer.Mechanics
                 var ev = Schedule<PlayerEnemyCollision>();
                 ev.player = player;
                 ev.enemy = this;
+
+                if(canFly)
+                    cd_comeBack.Start();
             }
         }
 
         void Update()
         {
-            if (canFly)
-                Fly();
-            else
-                Slime();
+            if (isAlive)
+            {
+                if (canFly)
+                    Fly();
+                else
+                    Slime();
+            }
         }
 
         private void Fly()
         {
-            if (flyPath == null || control.isDead)
+            if (flyPath == null ||
+                Vector2.Distance(rb.position, playerTransform.position) >= 20 /* if the enemy is too far away, do nothig*/ ||
+                currentWaypoint >= flyPath.vectorPath.Count /*if the enemy reachs the final waypoint*/)
                 return;
 
-            //if the enemy reachs the final waypoint
-            if (currentWaypoint >= flyPath.vectorPath.Count)
-                return;
+            if(cd_seekAgain.IsFinished)
+            {
+                UpdatePath();
+                cd_seekAgain.Start();
+            }
 
-            if (Vector2.Distance(rb.position, playerTransform.position) <= 10)
+            // the enemy only will go after the player if it can "see" him
+            if (Vector2.Distance(rb.position, playerTransform.position) <= 6)
             {
                 transform.position = Vector2.MoveTowards(rb.position, (Vector2)flyPath.vectorPath[currentWaypoint], control.maxSpeed * Time.deltaTime);
 
@@ -89,14 +112,11 @@ namespace Platformer.Mechanics
                 if (distance <= pickNextWaypointDist)
                     currentWaypoint++;
             }
+            // Else, the enemy will fly like a real fly
             else
             {
                 float minMax = 1f;
-                if (cd_idle.IsFinished)
-                    idleTarget = (new Vector2(Random.Range(-minMax, minMax), Random.Range(-minMax, minMax))) + rb.position;
-
-                if (Vector2.Distance(rb.position, idleTarget) <= 0.2f)
-                    return;
+                idleTarget = (new Vector2(Random.Range(-minMax, minMax), Random.Range(-minMax, minMax))) + rb.position;
 
                 transform.position = Vector2.MoveTowards(rb.position, idleTarget, control.maxSpeed * Time.deltaTime);
             }
@@ -105,7 +125,10 @@ namespace Platformer.Mechanics
 
         private void UpdatePath()
         {
-            seeker.StartPath(rb.position, playerTransform.position, OnPathComplete);
+            if (!cd_comeBack.IsFinished)
+                seeker.StartPath(rb.position, originalPlace, OnPathComplete);
+            else
+                seeker.StartPath(rb.position, playerTransform.position, OnPathComplete);
         }
 
         private void OnPathComplete(Path p)
@@ -124,6 +147,11 @@ namespace Platformer.Mechanics
                 if (mover == null) mover = path.CreateMover(control.maxSpeed * 0.5f);
                 control.move.x = Mathf.Clamp(mover.Position.x - transform.position.x, -1, 1);
             }
+        }
+
+        public void Kill()
+        {
+            isAlive = false;
         }
 
     }

@@ -32,6 +32,7 @@ namespace Platformer.Gameplay
                     {
                         Schedule<EnemyDeath>().enemy = enemy;
                         player.Bounce(2);
+                        enemy.Kill();
                     }
                     else
                     {
@@ -42,12 +43,16 @@ namespace Platformer.Gameplay
                 {
                     Schedule<EnemyDeath>().enemy = enemy;
                     player.Bounce(2);
+                    enemy.Kill();
                 }
             }
             else
             {
                 if (player.isStarPowerUp)
+                {
                     Schedule<EnemyDeath>().enemy = enemy;
+                    enemy.Kill();
+                }
                 else
                     Schedule<PlayerDeath>();
             }

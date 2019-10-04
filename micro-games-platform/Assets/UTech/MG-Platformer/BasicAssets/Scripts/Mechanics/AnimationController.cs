@@ -37,11 +37,6 @@ namespace Platformer.Mechanics
         /// </summary>
         public bool stopJump;
 
-        /// <summary>
-        /// Set to true if the enemy died
-        /// </summary>
-        [HideInInspector] public bool isDead = false;
-
         SpriteRenderer spriteRenderer;
         Animator animator;
         PlatformerModel model = Simulation.GetModel<PlatformerModel>();
