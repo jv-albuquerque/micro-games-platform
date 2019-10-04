@@ -87,21 +87,10 @@ namespace Platformer.Mechanics
         {
             if (controlEnabled)
             {
-                move.x = Input.GetAxis("Horizontal");
+                //move.x = Input.GetAxis("Horizontal");
                 if (Input.GetButtonDown("Jump"))
                 {
-                    if(jumpState == JumpState.Grounded)
-                    {
-                        jumpState = JumpState.PrepareToJump;
-                    }
-                    //Double jump
-                    else if (jumpPowerUP.active && !doubleJumped)
-                    {
-                        velocity.y = jumpTakeOffSpeed * model.jumpModifier;
-                        jumpState = JumpState.PrepareToJump;
-                        doubleJumped = true;
-                    }
-
+                    Jump();
                 }
                 else if (Input.GetButtonUp("Jump") && !trampolineJump)
                 {
@@ -251,6 +240,29 @@ namespace Platformer.Mechanics
         }
 
         public bool isStarPowerUp { get { return starPowerUP.active; } }
+
+        public void HorizontalMove(float h)
+        {
+            if (controlEnabled)
+                move.x = h;
+
+            Debug.Log("!");
+        }
+
+        public void Jump()
+        {
+            if (jumpState == JumpState.Grounded)
+            {
+                jumpState = JumpState.PrepareToJump;
+            }
+            //Double jump
+            else if (jumpPowerUP.active && !doubleJumped)
+            {
+                velocity.y = jumpTakeOffSpeed * model.jumpModifier;
+                jumpState = JumpState.PrepareToJump;
+                doubleJumped = true;
+            }
+        }
 
         public enum JumpState
         {
