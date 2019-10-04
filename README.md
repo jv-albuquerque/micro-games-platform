@@ -17,7 +17,7 @@ The base asset to do this is in the [asset store](https://assetstore.unity.com/p
 	* ~~Feather~~: Create the ability of double jump.
 	* ~~Zero Gravity~~: Decrese the gravity scale.
 * extra Mobile Controls: A simple control for mobile, just to the player be able to walk and to jump.
-* extra HUD: A main menu, loading screen and a place to change the settings (sounds).
+* extra ~~HUD~~: A main menu, loading screen and a place to change the settings (sounds).
 
 ## Authors
 * **João Vitor Filgueira Albuquerque** - [João Vitor's site](https://jvalbuquerque.com.br)

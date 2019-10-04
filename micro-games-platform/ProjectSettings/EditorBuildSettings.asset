@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/UTech/MG-Platformer/BasicAssets/Scenes/MainMenu.unity
     guid: d59e515ed441b7242aa42e567700802e
   - enabled: 1
+    path: Assets/UTech/MG-Platformer/BasicAssets/Scenes/LoadingScreen.unity
+    guid: b4f8cd9bb28ca9340b1a962fe3fcb68a
+  - enabled: 1
     path: Assets/UTech/MG-Platformer/BasicAssets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}

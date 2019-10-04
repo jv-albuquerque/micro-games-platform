@@ -27,9 +27,14 @@ namespace Platformer.UI
 
         bool showMainCanvas = false;
 
+        //Game Canvas properties
+        [SerializeField] private GameObject gameUI;
+        private bool gameUiActive = true;
+
         void OnEnable()
         {
             _ToggleMainMenu(showMainCanvas);
+            gameUI.SetActive(true);
         }
 
         /// <summary>
@@ -65,8 +70,16 @@ namespace Platformer.UI
         {
             if (Input.GetButtonDown("Menu"))
             {
-                ToggleMainMenu(show: !showMainCanvas);
+                Pause();
             }
+        }
+
+        public void Pause()
+        {
+            ToggleMainMenu(show: !showMainCanvas);
+
+            gameUiActive = !gameUiActive;
+            gameUI.SetActive(gameUiActive);
         }
 
     }
