@@ -30,6 +30,7 @@ namespace Platformer.Mechanics
         private Vector2 originalPlace;
         private Cooldown cd_comeBack;
         private Cooldown cd_seekAgain;
+        private Vector2 originalScale;
 
         private bool isAlive = true;
 
@@ -50,6 +51,7 @@ namespace Platformer.Mechanics
 
             if (canFly)
             {
+                originalScale = transform.localScale;
                 seeker = GetComponent<Seeker>();
                 rb = GetComponent<Rigidbody2D>();
                 playerTransform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
@@ -103,6 +105,8 @@ namespace Platformer.Mechanics
                 currentWaypoint >= flyPath.vectorPath.Count /*if the enemy reachs the final waypoint*/)
                 return;            
 
+
+
             // the enemy only will go after the player if it can "see" him
             if (Vector2.Distance(rb.position, playerTransform.position) <= 6)
             {
@@ -111,6 +115,13 @@ namespace Platformer.Mechanics
                 float distance = Vector2.Distance(rb.position, flyPath.vectorPath[currentWaypoint]);
                 if (distance <= pickNextWaypointDist)
                     currentWaypoint++;
+
+                Vector2 t = (Vector2)flyPath.vectorPath[currentWaypoint];
+
+                if (t.x < rb.position.x)
+                    transform.localScale = originalScale;
+                else
+                    transform.localScale = originalScale * new Vector2(-1, 1);
             }
             // Else, the enemy will fly like a real fly
             else
@@ -118,7 +129,7 @@ namespace Platformer.Mechanics
                 float minMax = 1f;
                 idleTarget = (new Vector2(Random.Range(-minMax, minMax), Random.Range(-minMax, minMax))) + rb.position;
 
-                transform.position = Vector2.MoveTowards(rb.position, idleTarget, control.maxSpeed * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(rb.position, idleTarget, control.maxSpeed * Time.deltaTime);                
             }
 
         }
