@@ -245,8 +245,6 @@ namespace Platformer.Mechanics
         {
             if (controlEnabled)
                 move.x = h;
-
-            Debug.Log("!");
         }
 
         public void Jump()

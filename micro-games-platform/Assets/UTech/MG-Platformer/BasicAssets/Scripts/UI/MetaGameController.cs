@@ -28,7 +28,7 @@ namespace Platformer.UI
         bool showMainCanvas = false;
 
         //Game Canvas properties
-        [SerializeField] private GameObject gameUI;
+        [SerializeField] private GameObject gameUI = null;
         private bool gameUiActive = true;
 
         void OnEnable()
