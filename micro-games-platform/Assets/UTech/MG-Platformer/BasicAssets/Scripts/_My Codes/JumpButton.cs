@@ -1,18 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
-public class JumpButton : MonoBehaviour
+public class JumpButton : MonoBehaviour, IPointerDownHandler
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private UnityEvent jumpEvent;
 
-    // Update is called once per frame
-    void Update()
+    public void OnPointerDown(PointerEventData eventData)
     {
-        
+        jumpEvent.Invoke();
     }
 }
