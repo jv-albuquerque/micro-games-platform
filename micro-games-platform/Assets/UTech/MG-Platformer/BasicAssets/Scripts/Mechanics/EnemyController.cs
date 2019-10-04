@@ -92,16 +92,16 @@ namespace Platformer.Mechanics
 
         private void Fly()
         {
-            if (flyPath == null ||
-                Vector2.Distance(rb.position, playerTransform.position) >= 20 /* if the enemy is too far away, do nothig*/ ||
-                currentWaypoint >= flyPath.vectorPath.Count /*if the enemy reachs the final waypoint*/)
-                return;
-
-            if(cd_seekAgain.IsFinished)
+            if (cd_seekAgain.IsFinished)
             {
                 UpdatePath();
                 cd_seekAgain.Start();
             }
+
+            if (flyPath == null ||
+                Vector2.Distance(rb.position, playerTransform.position) >= 20 /* if the enemy is too far away, do nothig*/ ||
+                currentWaypoint >= flyPath.vectorPath.Count /*if the enemy reachs the final waypoint*/)
+                return;            
 
             // the enemy only will go after the player if it can "see" him
             if (Vector2.Distance(rb.position, playerTransform.position) <= 6)
