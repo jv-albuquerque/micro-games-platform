@@ -24,6 +24,8 @@ namespace Platformer.Mechanics
         private Path flyPath; // the A* mesh
         private Seeker seeker; // the class that find the best path in the mesh
         private Rigidbody2D rb; // the enemy's rigidbody 2D
+        private Cooldown cd_idle; // cd to move when the enemy isn't seeing the player
+        private Vector2 idleTarget; // where the fly wants to go when isnt seeing the player
 
         internal PatrolPath.Mover mover;
         internal AnimationController control;
@@ -45,6 +47,7 @@ namespace Platformer.Mechanics
                 seeker = GetComponent<Seeker>();
                 rb = GetComponent<Rigidbody2D>();
                 playerTransform = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+                cd_idle = new Cooldown(1f, true);
 
                 InvokeRepeating("UpdatePath", 0, .5f);
             }
@@ -78,11 +81,25 @@ namespace Platformer.Mechanics
             if (currentWaypoint >= flyPath.vectorPath.Count)
                 return;
 
-            transform.position = Vector2.MoveTowards(rb.position, (Vector2)flyPath.vectorPath[currentWaypoint], control.maxSpeed * Time.deltaTime);
+            if (Vector2.Distance(rb.position, playerTransform.position) <= 10)
+            {
+                transform.position = Vector2.MoveTowards(rb.position, (Vector2)flyPath.vectorPath[currentWaypoint], control.maxSpeed * Time.deltaTime);
 
-            float distance = Vector2.Distance(rb.position, flyPath.vectorPath[currentWaypoint]);
-            if (distance <= pickNextWaypointDist)
-                currentWaypoint++;
+                float distance = Vector2.Distance(rb.position, flyPath.vectorPath[currentWaypoint]);
+                if (distance <= pickNextWaypointDist)
+                    currentWaypoint++;
+            }
+            else
+            {
+                float minMax = 1f;
+                if (cd_idle.IsFinished)
+                    idleTarget = (new Vector2(Random.Range(-minMax, minMax), Random.Range(-minMax, minMax))) + rb.position;
+
+                if (Vector2.Distance(rb.position, idleTarget) <= 0.2f)
+                    return;
+
+                transform.position = Vector2.MoveTowards(rb.position, idleTarget, control.maxSpeed * Time.deltaTime);
+            }
 
         }
 
