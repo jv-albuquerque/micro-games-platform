@@ -89,6 +89,7 @@ namespace Platformer.Mechanics
             if (controlEnabled)
             {
                 move.x = CrossPlatformInputManager.GetAxis("Horizontal");
+
                 if (Input.GetButtonDown("Jump"))
                 {
                     Jump();

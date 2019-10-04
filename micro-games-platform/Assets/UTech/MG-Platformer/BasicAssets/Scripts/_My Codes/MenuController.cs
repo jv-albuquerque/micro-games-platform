@@ -22,6 +22,12 @@ public class MenuController : MonoBehaviour
         MainMenu();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            Application.Quit();
+    }
+
     /// <summary>
     /// Function that starts the game
     /// Used by the Start button
