@@ -22,5 +22,5 @@ The base asset to do this is in the [asset store](https://assetstore.unity.com/p
 ## Authors
 * **João Vitor Filgueira Albuquerque** - [João Vitor's site](https://jvalbuquerque.com.br)
 
-##Copyrights
+## Copyrights
 * A* pathfinding - [Aron Granberg](https://arongranberg.com/)
