@@ -1,5 +1,6 @@
 using Platformer.Core;
 using Platformer.Mechanics;
+using UnityEngine;
 
 namespace Platformer.Gameplay
 {
@@ -14,7 +15,7 @@ namespace Platformer.Gameplay
         public override void Execute()
         {
             if (player.audioSource && player.jumpAudio)
-                player.audioSource.PlayOneShot(player.jumpAudio);
+                player.audioSource.PlayOneShot(player.jumpAudio, PlayerPrefs.GetFloat("EffectVolume", 0.7f));
         }
     }
 }

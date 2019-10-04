@@ -28,7 +28,7 @@ public class PlayAudioClip : StateMachineBehaviour
         var nt = stateInfo.normalizedTime;
         if (modulus > 0f) nt %= modulus;
         if (nt >= t && last_t < t)
-            AudioSource.PlayClipAtPoint(clip, animator.transform.position);
+            AudioSource.PlayClipAtPoint(clip, animator.transform.position, PlayerPrefs.GetFloat("EffectVolume", 0.7f));
         last_t = nt;
     }
 }
