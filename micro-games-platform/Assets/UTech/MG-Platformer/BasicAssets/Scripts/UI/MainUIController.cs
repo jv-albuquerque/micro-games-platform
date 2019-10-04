@@ -22,12 +22,6 @@ namespace Platformer.UI
             }
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
-                BackMainMenu();
-        }
-
         void OnEnable()
         {
             SetActivePanel(0);
