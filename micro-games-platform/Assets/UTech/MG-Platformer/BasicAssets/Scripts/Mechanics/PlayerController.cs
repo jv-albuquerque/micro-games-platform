@@ -259,6 +259,11 @@ namespace Platformer.Mechanics
             }
         }
 
+        public void StopJump()
+        {
+            stopJump = true;
+        }
+
         public enum JumpState
         {
             Grounded,
