@@ -92,7 +92,7 @@ namespace Platformer.Mechanics
                 seeker = GetComponent<Seeker>();
                 rb = GetComponent<Rigidbody2D>();
 
-                seeker.StartPath(rb.position, playerTransform.position, OnPathComplete);
+                InvokeRepeating("UpdatePath", 0, .5f);
             }
             
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -121,19 +121,19 @@ namespace Platformer.Mechanics
             else
             {
                 rechedEndPath = false;
-            }
+            }            
 
-            // a vector that point where the enemy are to where it wanna go, with the lenth = 1
-            Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
-
-            //move in the direction of the last waypoint
-            transform.position = direction * maxSpeed * Time.deltaTime;
+            transform.position = Vector2.MoveTowards(rb.position, (Vector2)path.vectorPath[currentWaypoint], maxSpeed * Time.deltaTime);
 
             float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
-
             if (distance <= pickNextWaypointDist)
                 currentWaypoint++;
 
+        }
+
+        private void UpdatePath()
+        {
+            seeker.StartPath(rb.position, playerTransform.position, OnPathComplete);
         }
 
         private void OnPathComplete(Path p)
