@@ -6,6 +6,7 @@ using static Platformer.Core.Simulation;
 using Platformer.Model;
 using Platformer.Core;
 using UnityEngine.UI;
+using UnityStandardAssets.CrossPlatformInput;
 
 namespace Platformer.Mechanics
 {
@@ -87,7 +88,7 @@ namespace Platformer.Mechanics
         {
             if (controlEnabled)
             {
-                //move.x = Input.GetAxis("Horizontal");
+                move.x = CrossPlatformInputManager.GetAxis("Horizontal");
                 if (Input.GetButtonDown("Jump"))
                 {
                     Jump();
@@ -240,12 +241,7 @@ namespace Platformer.Mechanics
         }
 
         public bool isStarPowerUp { get { return starPowerUP.active; } }
-
-        public void HorizontalMove(float h)
-        {
-            if (controlEnabled)
-                move.x = h;
-        }
+        
 
         public void Jump()
         {
